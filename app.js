@@ -3,21 +3,191 @@ const express = require("express");
 const app = express();
 require("./config")(app);
 
+let jobs = [
+	{
+		id: 1,
+		status: "running",
+		description: "Installing app {app_name}",
+		numSteps: 5,
+		currentStep: {
+			description: "Downloading...",
+			num: 3,
+			unit: "B",
+			unitsTotal: 10485761,
+			unitsDone: 512000,
+			completion: 4.88,
+			rate: 2048,
+		},
+		result: {
+			code: 0,
+			message: "",
+		},
+	},
+	{
+		id: 2,
+		status: "failed",
+		description: "Installing app {app_name}",
+		numSteps: 3,
+		currentStep: {
+			description: "Downloading...",
+			num: 1,
+			unit: "B",
+			unitsTotal: 1085761,
+			unitsDone: 10857,
+			completion: 1,
+			rate: 1000,
+		},
+		result: {
+			code: 0,
+			message: "",
+		},
+	},
+	{
+		id: 3,
+		status: "successful",
+		description: "Installing app {app_name}",
+		numSteps: 4,
+		currentStep: {
+			description: "Downloading...",
+			num: 2,
+			unit: "B",
+			unitsTotal: 185761,
+			unitsDone: 185761,
+			completion: 100,
+			rate: 500,
+		},
+		result: {
+			code: 0,
+			message: "",
+		},
+	},
+];
+
+const status = ["queued", "running", "cancelled", "successful", "failed"];
+const description = [
+	"Downloading app",
+	"Installing app {app_name}",
+	"Installation complete",
+];
+const numSteps = 10;
+
 // routes
-app.post("/202", (req, res) => {
+app.post("/createJob", (req, res) => {
 	const id = Math.floor(Math.random() * 1000);
-	console.log("id", id);
-	res.status(202).location(`/new-location/${id}`).send(String(id));
+	const unitsTotal = Math.floor(Math.random() * 3000000);
+	const unitsDone = Math.floor(Math.random() * 30000);
+	const completion = (unitsDone/unitsTotal*100).toFixed(2);
+	
+	jobs.push({
+		id,
+		status: status[Math.floor(Math.random() * status.length)],
+		description: "Installing app {app.name}",
+		numSteps,
+		currentStep: {
+			description:
+				description[Math.floor(Math.random() * description.length)],
+			num: Math.floor(Math.random() * 10),
+			unit: "B",
+			unitsTotal,
+			unitsDone,
+			completion,
+			rate: 0,
+		},
+		result: {
+			code: 0,
+			message: "",
+		},
+	});
+	res.status(200).send({id, completion});
 });
 
-// app.get("/jobs", (req, res) => {
-// 	res.status(200).send(jobs);
-// });
+app.get("/updateJobs", (req, res) => {
+	console.log("inside app.js/updateJobs")
+	console.log("jobs.length", jobs.length)
+	for (let i = 0; i < jobs.length; i++) {
+		jobs[i].currentStep.unitsDone = jobs[i].currentStep.unitsDone * 2;
+		if (jobs[i].currentStep.unitsDone >= jobs[i].currentStep.unitsTotal) {
+			jobs[i].currentStep.unitsDone = jobs[i].currentStep.unitsTotal;
+			jobs[i].status = "successful";
+			jobs[i].currentStep.description = "Installation complete";
+		}
+		jobs[i].currentStep.completion = (jobs[i].currentStep.unitsDone/jobs[i].currentStep.unitsTotal*100).toFixed(2);
+	}
+	res.status(200).send(jobs);
+});
 
-// app.get("/jobs/:jobId", (req, res) => {
-// 	const job = jobs.filter(j => j.id === Number(req.params.jobId));
-// 	res.status(200).send(job);
-// });
+app.get("/resetJobs", (req, res) => {
+	console.log("inside app.js/resetJobs")
+	jobs = [
+		{
+			id: 1,
+			status: "running",
+			description: "Installing app {app_name}",
+			numSteps: 5,
+			currentStep: {
+				description: "Downloading...",
+				num: 3,
+				unit: "B",
+				unitsTotal: 10485761,
+				unitsDone: 512000,
+				completion: 4.88,
+				rate: 2048,
+			},
+			result: {
+				code: 0,
+				message: "",
+			},
+		},
+		{
+			id: 2,
+			status: "failed",
+			description: "Installing app {app_name}",
+			numSteps: 3,
+			currentStep: {
+				description: "Downloading...",
+				num: 1,
+				unit: "B",
+				unitsTotal: 1085761,
+				unitsDone: 10857,
+				completion: 1,
+				rate: 1000,
+			},
+			result: {
+				code: 0,
+				message: "",
+			},
+		},
+		{
+			id: 3,
+			status: "successful",
+			description: "Installing app {app_name}",
+			numSteps: 4,
+			currentStep: {
+				description: "Downloading...",
+				num: 2,
+				unit: "B",
+				unitsTotal: 185761,
+				unitsDone: 185761,
+				completion: 100,
+				rate: 500,
+			},
+			result: {
+				code: 0,
+				message: "",
+			},
+		},
+	];
+	res.status(200).send(jobs);
+});
+
+app.get("/jobs", (req, res) => {
+	res.status(200).send(jobs);
+});
+
+app.get("/jobs/:jobId", (req, res) => {
+	const job = jobs.filter((j) => j.id === Number(req.params.jobId));
+	res.status(200).send(job);
+});
 
 app.get("/api/", (req, res) => {
 	res.send("hello world");

@@ -4,76 +4,17 @@ import Marketplace from "./Components/Marketplace";
 
 console.log("inside App.js");
 
-const jobList = [
-	{
-		id: 1,
-		status: "running",
-		description: "Installing app {app_name}",
-		numSteps: 5,
-		currentStep: {
-			description: "Downloading...",
-			num: 3,
-			unit: "B",
-			unitsTotal: 10485761,
-			unitsDone: 512000,
-			rate: 2048,
-		},
-		result: {
-			code: 0,
-			message: "",
-		},
-	},
-	{
-		id: 2,
-		status: "failed",
-		description: "Installing app {app_name}",
-		numSteps: 3,
-		currentStep: {
-			description: "Downloading...",
-			num: 1,
-			unit: "B",
-			unitsTotal: 1085761,
-			unitsDone: 10857,
-			rate: 1000,
-		},
-		result: {
-			code: 0,
-			message: "",
-		},
-	},
-	{
-		id: 3,
-		status: "successful",
-		description: "Installing app {app_name}",
-		numSteps: 4,
-		currentStep: {
-			description: "Downloading...",
-			num: 2,
-			unit: "B",
-			unitsTotal: 185761,
-			unitsDone: 185761,
-			rate: 500,
-		},
-		result: {
-			code: 0,
-			message: "",
-		},
-	},
-];
-
 const App = () => {
 	console.log("inside Apps.js/App");
 	const [jobs, setJob] = useState([]);
+	const [jobStatus, setJobStatus] = useState([]);
 
 	const createJob = async () => {
 		console.log("inside App.js/createJob");
-		const id = await axios
-			.post(`http://localhost:5005/202`)
+		const { id, completion } = await axios
+			.post(`http://localhost:5005/createJob`)
 			.then((response) => {
-				if (response.status === 202) {
-					// console.log ('response Location', response.headers.get("Location"))
-					// console.log ('full response', response)
-					// return response.headers.get("Location");
+				if (response.status === 200) {
 					return response.data;
 				} else {
 					throw new Error(
@@ -81,49 +22,88 @@ const App = () => {
 					);
 				}
 			})
-			// .then((location) => {
-			//   console.log(`Resource can be found at ${location}`);
-			// })
 			.catch((error) => {
 				console.error(error);
 			});
-		setJob([...jobs, id])
-  }
+		setJob([...jobs, id]);
+		setJobStatus([...jobStatus, completion]);
+	};
+
+	const updateJobs = async () => {
+		console.log("inside App.js/updateJobs");
+		const jobStatus = await axios
+			.get(`http://localhost:5005/updateJobs`)
+			.then((response) => {
+				if (response.status === 200) {
+					console.log("Jobs updated successfully");
+					return response.data;
+				} else {
+					throw new Error(
+						`Unexpected status code: ${response.status}`
+					);
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		console.log("jobStatus", jobStatus);
+		setJobStatus(jobStatus.map(j => j.currentStep.completion));
+	};
+
+	const resetJobs = async () => {
+		console.log("inside App.js/resetJobs");
+		const jobStatus = await axios
+			.get(`http://localhost:5005/resetJobs`)
+			.then((response) => {
+				if (response.status === 200) {
+					console.log("Jobs resetted successfully");
+					return response.data;
+				} else {
+					throw new Error(
+						`Unexpected status code: ${response.status}`
+					);
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		console.log("jobStatus", jobStatus);
+		setJob(jobStatus.map(j => j.id));
+		setJobStatus(jobStatus.map(j => j.currentStep.completion.toFixed(2)));
+	};
 
 	useEffect(() => {
 		console.log("inside Apps.js/useEffect");
-		// const getId = async () => {
-		// 	const id = await axios
-		// 		.post(`http://localhost:5005/202`)
-		// 		.then((response) => {
-		// 			if (response.status === 202) {
-		// 				// console.log ('response Location', response.headers.get("Location"))
-		// 				// console.log ('full response', response)
-		// 				// return response.headers.get("Location");
-		// 				return response.data;
-		// 			} else {
-		// 				throw new Error(
-		// 					`Unexpected status code: ${response.status}`
-		// 				);
-		// 			}
-		// 		})
-		// 		// .then((location) => {
-		// 		//   console.log(`Resource can be found at ${location}`);
-		// 		// })
-		// 		.catch((error) => {
-		// 			console.error(error);
-		// 		});
-		// 	setId(id);
-		// };
-
 		if (jobs.length === 0) {
-			setJob(jobList.map((j) => j.id));
-
+			console.log("if (jobs.length === 0) {");
+			// setJob(jobList.map((j) => j.id));
+      resetJobs();
 			console.log("jobs", jobs);
 		}
+
+		// if (jobStatus.length === 0) {
+		// 	console.log("if (jobStatus.length === 0) {");
+		// 	setJobStatus(
+		// 		jobList.map((j) =>
+		// 			(
+		// 				(j.currentStep.unitsDone / j.currentStep.unitsTotal) *
+		// 				100
+		// 			).toFixed(2)
+		// 		)
+		// 	);
+		// 	console.log("jobStatus", jobStatus);
+		// }
 	});
 
-	return <Marketplace handleCreateJob={createJob} jobs={jobs}></Marketplace>;
+	return (
+		<Marketplace
+			handleCreateJob={createJob}
+			handleUpdateJobs={updateJobs}
+			handleResetJobs={resetJobs}
+			jobs={jobs}
+			jobStatus={jobStatus}
+		></Marketplace>
+	);
 };
 
 export default App;
