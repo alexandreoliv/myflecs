@@ -1,22 +1,27 @@
 const Marketplace = (props) => {
-    // console.log("props", props)
-    const { handleCreateJob } = props;
+	// console.log("props", props)
+	// const { handleCreateJob } = props;
 
-	return <div>
-    
-    <input
-					type="button"
-					id="seach-input"
-					className="form-control"
-					placeholder="Create job"
-					aria-label="Search"
-					value="Create job"
-					onChange={handleCreateJob}
-				/>
+	const handleCreateJob = () => {
+		props.handleCreateJob();
+	};
 
-                <p>Jobs:</p>
-    
-    </div>;
+	return (
+		<div>
+			<input
+				type="button"
+				id="seach-input"
+				className="form-control"
+				placeholder="Create job"
+				aria-label="Search"
+				value="Create job"
+				onClick={handleCreateJob}
+			/>
+
+			<p>Jobs: {props.jobs.map(j => {
+                return j + ", "})}</p>
+		</div>
+	);
 };
 
 export default Marketplace;
