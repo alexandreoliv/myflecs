@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import CircularStatic from "./CircularProgress";
 
@@ -11,6 +12,21 @@ const Marketplace = (props) => {
 		handleCancelJob,
 		jobs,
 	} = props;
+
+	useEffect(() => {
+		console.log("inside Marketplace.js/useEffect")
+		console.log("amount of jobs still running:", jobs.filter((j) => j.status === "running").length)
+		const timer = setInterval(
+			() =>
+				jobs.filter((j) => j.status === "running").length > 0
+					? handleUpdateJobs()
+					: null,
+			1000
+		);
+		return () => {
+			clearInterval(timer);
+		};
+	});
 
 	return (
 		<div style={{ width: "70vw" }}>
@@ -92,11 +108,9 @@ const Marketplace = (props) => {
 			<div>
 				<p>Circular Progress:</p>
 				{jobs.map((j) =>
-					j.status !== "running" ? (
-						j.status.charAt(0).toUpperCase() + " "
-					) : (
-						CircularStatic(j.currentStep.completion, j.id)
-					)
+					j.status !== "running"
+						? j.status.charAt(0).toUpperCase() + " "
+						: CircularStatic(j.currentStep.completion, j.id)
 				)}
 			</div>
 

@@ -106,7 +106,7 @@ app.get("/updateJobs", (req, res) => {
 	console.log("inside app.js/updateJobs");
 	console.log("jobs.length", jobs.length);
 	for (let i = 0; i < jobs.length; i++) {
-		jobs[i].currentStep.unitsDone = jobs[i].currentStep.unitsDone * 2;
+		jobs[i].currentStep.unitsDone = jobs[i].currentStep.unitsDone * 1.5;
 		if (jobs[i].currentStep.unitsDone >= jobs[i].currentStep.unitsTotal) {
 			jobs[i].currentStep.unitsDone = jobs[i].currentStep.unitsTotal;
 			jobs[i].status = "successful";
