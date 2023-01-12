@@ -3,14 +3,7 @@ import CircularStatic from "./CircularProgress";
 
 const Marketplace = (props) => {
 	console.log("inside Marketplace.js/Marketplace");
-	console.log("props", props);
-	const {
-		handleCreateJob,
-		handleUpdateJobs,
-		handleResetJobs,
-		jobs,
-		jobStatus,
-	} = props;
+	const { handleCreateJob, handleUpdateJobs, handleResetJobs, jobs } = props;
 
 	return (
 		<div>
@@ -44,33 +37,28 @@ const Marketplace = (props) => {
 				onClick={handleResetJobs}
 			/>
 
-			<p>Jobs: {jobs.map((j) => j + ", ")}</p>
+			<p>Jobs: {jobs.map((j) => j.id + ", ")}</p>
 
-			<p>Job statuses: {jobStatus.map((j) => j + "%, ")}</p>
+			<p>
+				Job statuses:{" "}
+				{jobs.map((j) => j.currentStep.completion + "%, ")}
+			</p>
 
 			<div>
 				<p>Progress Bar version 1:</p>
-				{jobStatus.map((j) => (
+				{jobs.map((j) => (
 					<ProgressBar
 						key={j + Math.floor(Math.random() * 20000)}
 						bgcolor="#00695c"
-						completion={j}
+						completion={j.currentStep.completion}
 					/>
 				))}
 			</div>
 
 			<div>
 				<p>Progress Bar version 2:</p>
-				{/* {jobStatus.map((j) => (
-						// key={j + Math.floor(Math.random() * 20000)}
-						<CircularProgress value={j} />
-				))} */}
-				{jobStatus.map((j) => (
-						// key={j + Math.floor(Math.random() * 20000)}
-						CircularStatic(j)
-				))}
+				{jobs.map((j) => CircularStatic(j.currentStep.completion))}
 			</div>
-
 		</div>
 	);
 };

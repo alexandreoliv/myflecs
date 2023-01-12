@@ -5,8 +5,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 const CircularProgressWithLabel = (props) => {
-	console.log("inside CircularProgress4.js/CircularProgressWithLabel");
-	console.log("props", props);
+	console.log("inside CircularProgress.js/CircularProgressWithLabel");
 	return (
 		<Box sx={{ position: "relative", display: "inline-flex" }}>
 			<CircularProgress variant="determinate" {...props} />
@@ -44,19 +43,24 @@ CircularProgressWithLabel.propTypes = {
 };
 
 export default function CircularStatic(completion) {
-	// function CircularStatic() {
-		const [progress, setProgress] = React.useState(completion);
+	// const [progress, setProgress] = React.useState(completion);
 
-		React.useEffect(() => {
-			const timer = setInterval(() => {
-				setProgress((prevProgress) =>
-					prevProgress >= 100 ? 0 : prevProgress + 10
-				);
-			}, 800);
-			return () => {
-				clearInterval(timer);
-			};
-		}, []);
+	// React.useEffect(() => {
+	// 	const timer = setInterval(() => {
+	// 		setProgress((prevProgress) =>
+	// 			prevProgress >= 100 ? 0 : prevProgress + 10
+	// 		);
+	// 	}, 800);
+	// 	return () => {
+	// 		clearInterval(timer);
+	// 	};
+	// }, []);
 
-		return <CircularProgressWithLabel value={progress} />;
-	}
+	// return <CircularProgressWithLabel value={progress} />;
+	return (
+		<CircularProgressWithLabel
+			key={completion + Math.floor(Math.random() * 20000)}
+			value={completion}
+		/>
+	);
+}

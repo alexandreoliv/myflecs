@@ -73,13 +73,12 @@ const numSteps = 10;
 
 // routes
 app.post("/createJob", (req, res) => {
-	const id = Math.floor(Math.random() * 1000);
 	const unitsTotal = Math.floor(Math.random() * 3000000);
 	const unitsDone = Math.floor(Math.random() * 30000);
-	const completion = Number((unitsDone/unitsTotal*100).toFixed(2));
-	
-	jobs.push({
-		id,
+	const completion = Number(((unitsDone / unitsTotal) * 100).toFixed(2));
+
+	const newJob = {
+		id: Math.floor(Math.random() * 1000),
 		status: status[Math.floor(Math.random() * status.length)],
 		description: "Installing app {app.name}",
 		numSteps,
@@ -97,13 +96,15 @@ app.post("/createJob", (req, res) => {
 			code: 0,
 			message: "",
 		},
-	});
-	res.status(200).send({id, completion});
+	};
+
+	jobs.push(newJob);
+	res.status(200).send(newJob);
 });
 
 app.get("/updateJobs", (req, res) => {
-	console.log("inside app.js/updateJobs")
-	console.log("jobs.length", jobs.length)
+	console.log("inside app.js/updateJobs");
+	console.log("jobs.length", jobs.length);
 	for (let i = 0; i < jobs.length; i++) {
 		jobs[i].currentStep.unitsDone = jobs[i].currentStep.unitsDone * 2;
 		if (jobs[i].currentStep.unitsDone >= jobs[i].currentStep.unitsTotal) {
@@ -111,13 +112,19 @@ app.get("/updateJobs", (req, res) => {
 			jobs[i].status = "successful";
 			jobs[i].currentStep.description = "Installation complete";
 		}
-		jobs[i].currentStep.completion = Number((jobs[i].currentStep.unitsDone/jobs[i].currentStep.unitsTotal*100).toFixed(2));
+		jobs[i].currentStep.completion = Number(
+			(
+				(jobs[i].currentStep.unitsDone /
+					jobs[i].currentStep.unitsTotal) *
+				100
+			).toFixed(2)
+		);
 	}
 	res.status(200).send(jobs);
 });
 
 app.get("/resetJobs", (req, res) => {
-	console.log("inside app.js/resetJobs")
+	console.log("inside app.js/resetJobs");
 	jobs = [
 		{
 			id: 1,
