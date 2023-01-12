@@ -76,7 +76,7 @@ app.post("/createJob", (req, res) => {
 	const id = Math.floor(Math.random() * 1000);
 	const unitsTotal = Math.floor(Math.random() * 3000000);
 	const unitsDone = Math.floor(Math.random() * 30000);
-	const completion = (unitsDone/unitsTotal*100).toFixed(2);
+	const completion = Number((unitsDone/unitsTotal*100).toFixed(2));
 	
 	jobs.push({
 		id,
@@ -111,7 +111,7 @@ app.get("/updateJobs", (req, res) => {
 			jobs[i].status = "successful";
 			jobs[i].currentStep.description = "Installation complete";
 		}
-		jobs[i].currentStep.completion = (jobs[i].currentStep.unitsDone/jobs[i].currentStep.unitsTotal*100).toFixed(2);
+		jobs[i].currentStep.completion = Number((jobs[i].currentStep.unitsDone/jobs[i].currentStep.unitsTotal*100).toFixed(2));
 	}
 	res.status(200).send(jobs);
 });

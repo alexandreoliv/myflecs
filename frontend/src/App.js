@@ -46,8 +46,7 @@ const App = () => {
 			.catch((error) => {
 				console.error(error);
 			});
-		console.log("jobStatus", jobStatus);
-		setJobStatus(jobStatus.map(j => j.currentStep.completion));
+		setJobStatus(jobStatus.map((j) => Number(j.currentStep.completion)));
 	};
 
 	const resetJobs = async () => {
@@ -68,8 +67,10 @@ const App = () => {
 				console.error(error);
 			});
 		console.log("jobStatus", jobStatus);
-		setJob(jobStatus.map(j => j.id));
-		setJobStatus(jobStatus.map(j => j.currentStep.completion.toFixed(2)));
+		setJob(jobStatus.map((j) => j.id));
+		setJobStatus(
+			jobStatus.map((j) => Number(j.currentStep.completion.toFixed(2)))
+		);
 	};
 
 	useEffect(() => {
@@ -77,23 +78,29 @@ const App = () => {
 		if (jobs.length === 0) {
 			console.log("if (jobs.length === 0) {");
 			// setJob(jobList.map((j) => j.id));
-      resetJobs();
+			resetJobs();
 			console.log("jobs", jobs);
+			return;
 		}
-
-		// if (jobStatus.length === 0) {
-		// 	console.log("if (jobStatus.length === 0) {");
-		// 	setJobStatus(
-		// 		jobList.map((j) =>
-		// 			(
-		// 				(j.currentStep.unitsDone / j.currentStep.unitsTotal) *
-		// 				100
-		// 			).toFixed(2)
-		// 		)
-		// 	);
-		// 	console.log("jobStatus", jobStatus);
-		// }
 	});
+
+	// const autoUpdateJobs = () => {
+	// 	console.log("inside App.js/autoUpdateJobs");
+
+	// 	if (jobStatus.length > 0) {
+	// 		const unfinishedInstallations = jobStatus.filter(
+	// 			(j) => Number(j) < 100
+	// 		);
+	// 		console.log("unfinishedInstallations", unfinishedInstallations);
+	// 		if (unfinishedInstallations.length > 0) {
+	// 			console.log("I'll update again");
+	// 			updateJobs();
+	// 		}
+  //     else clearInterval(intervalId)
+	// 	}
+	// };
+
+	// const intervalId = setInterval(autoUpdateJobs, 1000);
 
 	return (
 		<Marketplace
