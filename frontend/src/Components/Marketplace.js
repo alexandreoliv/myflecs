@@ -110,7 +110,7 @@ const Marketplace = (props) => {
 				{jobs.map((j) =>
 					j.status !== "running"
 						? j.status.charAt(0).toUpperCase() + " "
-						: CircularStatic(j.currentStep.completion, j.id)
+						: CircularStatic(j.id, j.currentStep.completion)
 				)}
 			</div>
 

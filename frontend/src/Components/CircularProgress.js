@@ -1,4 +1,3 @@
-import * as React from "react";
 import PropTypes from "prop-types";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
@@ -42,7 +41,7 @@ CircularProgressWithLabel.propTypes = {
 	value: PropTypes.number.isRequired,
 };
 
-export default function CircularStatic(completion, id) {
+export default function CircularStatic(id, completion) {
 	return (
 		<CircularProgressWithLabel
 			key={id}
