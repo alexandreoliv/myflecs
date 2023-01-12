@@ -42,7 +42,7 @@ CircularProgressWithLabel.propTypes = {
 	value: PropTypes.number.isRequired,
 };
 
-export default function CircularStatic(completion) {
+export default function CircularStatic(completion, id) {
 	// const [progress, setProgress] = React.useState(completion);
 
 	// React.useEffect(() => {
@@ -59,7 +59,7 @@ export default function CircularStatic(completion) {
 	// return <CircularProgressWithLabel value={progress} />;
 	return (
 		<CircularProgressWithLabel
-			key={completion + Math.floor(Math.random() * 20000)}
+			key={id}
 			value={completion}
 		/>
 	);

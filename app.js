@@ -63,7 +63,7 @@ let jobs = [
 	},
 ];
 
-const status = ["queued", "running", "cancelled", "successful", "failed"];
+// const status = ["queued", "running", "cancelled", "successful", "failed"];
 const description = [
 	"Downloading app",
 	"Installing app {app_name}",
@@ -79,7 +79,7 @@ app.post("/createJob", (req, res) => {
 
 	const newJob = {
 		id: Math.floor(Math.random() * 1000),
-		status: status[Math.floor(Math.random() * status.length)],
+		status: "running",
 		description: "Installing app {app.name}",
 		numSteps,
 		currentStep: {
@@ -147,7 +147,7 @@ app.get("/resetJobs", (req, res) => {
 		},
 		{
 			id: 2,
-			status: "failed",
+			status: "running",
 			description: "Installing app {app_name}",
 			numSteps: 3,
 			currentStep: {
@@ -166,7 +166,7 @@ app.get("/resetJobs", (req, res) => {
 		},
 		{
 			id: 3,
-			status: "successful",
+			status: "running",
 			description: "Installing app {app_name}",
 			numSteps: 4,
 			currentStep: {
@@ -174,8 +174,8 @@ app.get("/resetJobs", (req, res) => {
 				num: 2,
 				unit: "B",
 				unitsTotal: 185761,
-				unitsDone: 185761,
-				completion: 100,
+				unitsDone: 183000,
+				completion: 98.51,
 				rate: 500,
 			},
 			result: {
@@ -184,6 +184,22 @@ app.get("/resetJobs", (req, res) => {
 			},
 		},
 	];
+	res.status(200).send(jobs);
+});
+
+app.get("/failJob", (req, res) => {
+	console.log("inside app.js/failJob");
+	const numberOfJobs = jobs.length;
+	const random = Math.floor(Math.random() * numberOfJobs);
+	jobs[random].status = "failed";
+	res.status(200).send(jobs);
+});
+
+app.get("/cancelJob", (req, res) => {
+	console.log("inside app.js/cancelJob");
+	const numberOfJobs = jobs.length;
+	const random = Math.floor(Math.random() * numberOfJobs);
+	jobs[random].status = "cancelled";
 	res.status(200).send(jobs);
 });
 

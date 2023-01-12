@@ -67,6 +67,46 @@ const App = () => {
 		setJob(jobs.map((j) => j));
 	};
 
+  const failJob = async () => {
+		console.log("inside App.js/failJob");
+		const jobs = await axios
+			.get(`http://localhost:5005/failJob`)
+			.then((response) => {
+				if (response.status === 200) {
+					console.log("Random job failed successfully");
+					return response.data;
+				} else {
+					throw new Error(
+						`Unexpected status code: ${response.status}`
+					);
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		setJob(jobs.map((j) => j));
+	};
+
+  const cancelJob = async () => {
+		console.log("inside App.js/cancelJob");
+		const jobs = await axios
+			.get(`http://localhost:5005/cancelJob`)
+			.then((response) => {
+				if (response.status === 200) {
+					console.log("Random job cancelled successfully");
+					return response.data;
+				} else {
+					throw new Error(
+						`Unexpected status code: ${response.status}`
+					);
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		setJob(jobs.map((j) => j));
+	};
+
 	useEffect(() => {
 		console.log("inside Apps.js/useEffect");
 		if (jobs.length === 0) {
@@ -100,6 +140,8 @@ const App = () => {
 			handleCreateJob={createJob}
 			handleUpdateJobs={updateJobs}
 			handleResetJobs={resetJobs}
+      handleFailJob={failJob}
+      handleCancelJob={cancelJob}
 			jobs={jobs}
 		></Marketplace>
 	);
