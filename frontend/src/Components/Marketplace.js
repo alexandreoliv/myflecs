@@ -11,12 +11,19 @@ const Marketplace = (props) => {
 		handleResetJobs,
 		handleFailJob,
 		handleCancelJob,
+		handleExportApps,
+		handleGetExports,
+		handleResetExports,
 		jobs,
+		exports,
 	} = props;
 
 	useEffect(() => {
-		console.log("inside Marketplace.js/useEffect")
-		console.log("amount of jobs still running:", jobs.filter((j) => j.status === "running").length)
+		console.log("inside Marketplace.js/useEffect");
+		console.log(
+			"amount of jobs still running:",
+			jobs.filter((j) => j.status === "running").length
+		);
 		const timer = setInterval(
 			() =>
 				jobs.filter((j) => j.status === "running").length > 0
@@ -81,7 +88,52 @@ const Marketplace = (props) => {
 					value="Cancel random job"
 					onClick={handleCancelJob}
 				/>
+
+				<input
+					type="button"
+					id="export-apps"
+					className="form-control"
+					placeholder="Export apps"
+					aria-label="Search"
+					value="Export apps"
+					onClick={handleExportApps}
+				/>
+
+				<input
+					type="button"
+					id="get-exports"
+					className="form-control"
+					placeholder="Get exports"
+					aria-label="Search"
+					value="Get exports"
+					onClick={handleGetExports}
+				/>
+
+				<input
+					type="button"
+					id="reset-exports"
+					className="form-control"
+					placeholder="Reset exports"
+					aria-label="Search"
+					value="Reset exports"
+					onClick={handleResetExports}
+				/>
 			</div>
+
+			<div
+				style={{
+					background: "black",
+					height: "10px",
+					margin: "10px 0",
+				}}
+			></div>
+
+			<p>
+				Exports:{" "}
+				{exports.map((e) => (
+					<p key={e.id}>{JSON.stringify(e)}</p>
+				))}
+			</p>
 
 			<div
 				style={{
