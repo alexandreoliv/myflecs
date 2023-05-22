@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import ProgressBar from "./ProgressBar";
 import CircularStatic from "./CircularProgress";
+import LinearWithValueLabel from "./LinearProgressWithLabel";
 
 const Marketplace = (props) => {
 	console.log("inside Marketplace.js/Marketplace");
@@ -136,6 +137,26 @@ const Marketplace = (props) => {
 						/>
 					)
 				)}
+			</div>
+
+			<div
+				style={{
+					background: "black",
+					height: "10px",
+					margin: "10px 0",
+				}}
+			></div>
+
+			<div>
+				<p>Linear Progress Bar:</p>
+
+				{jobs.map((j) => (
+					<LinearWithValueLabel
+						key={j.id}
+						numSteps={j.numSteps}
+						step={j.currentStep.num}
+					/>
+				))}
 			</div>
 		</div>
 	);
